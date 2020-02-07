@@ -3,6 +3,7 @@ import csv
 import json
 import pandas as pd
 import numpy as np
+import sys
 
 class Traffic:
     def __init__(self):
@@ -58,10 +59,36 @@ class Traffic:
         with open("data/traffic_out.json", "w", encoding = 'utf-8') as f:
             json.dump(traf_list, f, ensure_ascii = False, indent = 4)
 
+    def process_stops(self):
+        sjf = pd.read_json(self.stops_json_path)
 
+        stop_list = []
+        # go thru all the stop groups
+        for sg in sjf["stopGroups"]:
+            # for each stop group go thru all the stops in it
+            for stop in sg["stops"]:
+                # for each stop, go thru data in my_list (data from csv)
+                stop_list.append({
+                    "id": stop["id"],
+                    "name": stop["altIdosName"],
+                    "lat": stop["lat"],
+                    "lon": stop["lon"],
+                })
+        with open("data/stops_out.json", "w", encoding='utf-8') as f:
+            json.dump(stop_list, f, ensure_ascii = False, indent = 4)
+
+    def merge_panda(self):
+        # panda merge
+        pd_stops = pd.read_json("data/stops_out.json")
+        pd_traffic = pd.read_json("data/traffic_out.json")
+        ST_out = pd.merge(pd_stops, pd_traffic, how = "inner")
+        print(ST_out)
+        # ST_out.to_csv("data/stops_traf_merge.csv")
 
 
 if __name__ == '__main__':
     traffic = Traffic()
     # traffic.download_data()
-    traffic.process_traffic()
+    # traffic.process_traffic()
+    traffic.process_stops()
+    traffic.merge_panda()
