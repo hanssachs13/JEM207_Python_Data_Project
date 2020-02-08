@@ -60,7 +60,7 @@ class Traffic:
             json.dump(traf_list, f, ensure_ascii = False, indent = 4)
 
     def process_stops(self):
-        sjf = pd.read_json(self.stops_json_path)
+        sjf = pd.read_json(self.stops_json_path, encoding = 'utf-8')
 
         stop_list = []
         # go thru all the stop groups
@@ -79,8 +79,8 @@ class Traffic:
 
     def merge_panda(self):
         # panda merge
-        pd_stops = pd.read_json("data/stops_out.json")
-        pd_traffic = pd.read_json("data/traffic_out.json")
+        pd_stops = pd.read_json("data/stops_out.json", encoding = 'utf-8')
+        pd_traffic = pd.read_json("data/traffic_out.json", encoding = 'utf-8')
         ST_out = pd.merge(pd_stops, pd_traffic, how = "inner")
         print(ST_out)
         # ST_out.to_csv("data/stops_traf_merge.csv")
