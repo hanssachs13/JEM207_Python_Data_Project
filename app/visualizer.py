@@ -7,7 +7,7 @@ import plotly.express as px
 class Visualizer:
     @staticmethod
     def load_data() -> dict:
-        with open('data/final-stations_with_count.json') as data:
+        with open('data/final-stations_with_count.json', encoding='utf-8') as data:
             json_data = json.load(data)
         return json_data
 
