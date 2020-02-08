@@ -1,5 +1,5 @@
 import json
-
+from traffic import *
 import pandas as pd
 import plotly.express as px
 
@@ -56,9 +56,39 @@ class Visualizer:
         )
         fig.show()
 
+    def plot_traffic(self,type: str, zoom: int = 7, start: int = 1, end: int = 24, data_path: str = ''):
+
+        # # json_data = self.reformat_data(self.load_data(), date)
+        # traffic = Traffic()
+        # traffic.download_data()
+        # traffic.process_traffic()
+        # traffic.process_stops()
+        # traffic.merge_panda()
+        df = pd.read_pickle(data_path)
+
+        df = Traffic.vystup(data = df, start = start,end = end,out = type)
+
+        max_output = df['output'].max()
+        # mean_output = df['output'].mean()
+
+        fig = px.density_mapbox(
+            data_frame=df, lat='lat', lon='lon', z='output', hover_name='name',
+            radius=15,  # sets the thickness of each data point in the map
+            color_continuous_midpoint = max_output / 2.4,  # value found by testing to provide good visibility of
+            # color_continuous_midpoint = mean_output
+            # points with low number of stop counts per day
+            color_continuous_scale='inferno', mapbox_style="open-street-map",
+            center=dict(lat=49.80, lon=15.20), zoom=zoom,  # center the map on the Czech Republic
+        )
+        fig.show()
+
 
 if __name__ == '__main__':
     visualizer = Visualizer()
     # print(visualizer.get_possible_dates())
-    visualizer.plot('2020-01-02')
+    # visualizer.plot('2020-01-02')
+    now = pd.datetime.now()
+    visualizer.plot_traffic(data_path = 'data/final_traffic.pkl', type = 'delay')
+    # visualizer.plot_traffic(type='delay')
+    print(pd.datetime.now()-now)
     # visualizer.plot('2019-12-07')
