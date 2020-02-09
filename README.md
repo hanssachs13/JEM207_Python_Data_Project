@@ -1,8 +1,10 @@
 # Public transport stop frequency
 
-This project downloads available public transport data about frequency of stops per day by the public transport on all available stops. The data is downloaded from **Golemio API**, "documentation" can be found here: https://golemioapi.docs.apiary.io/. Additionally, it also uses data about the usage of public transport from https://github.com/datastory/dpp-prepravni-pruzkumy combined with data on stops from **PID**.
+This project downloads available public transport data about frequency of stops per day by the public transport on all available stops. The data is downloaded from **Golemio API**, "documentation" can be found here: https://golemioapi.docs.apiary.io/.
 
 *The lack of documentation can unfortunately lead to faulty behaviour, and unknown limitations. E.g. It appears, that the data can be downloaded for only 'today' and 10 days in advance. It also appears, that there are no limitations as far as number of data that can be downloaded or number of requests to the API, that can be made.*
+
+Additionally, this project also collects and processes data about the usage of public transport from https://github.com/datastory/dpp-prepravni-pruzkumy, combined with data on stops from **PID**. The combination of these two datasets allows the user to obtain information about the busyness of the stops in terms of number of passengers and delay times.
 
 ```python
 from app.downloader import GolemioApiDownloader
@@ -49,7 +51,7 @@ Additionally, the `Traffic` class also includes the `output_col()` method, which
 
 Delay is calculated as a difference between real and scheduled departure. Early departures are treated as zeroes, i.e. as if the tram was exactly on time.
 
-Flow is the sum of passengers entering and exiting the tram, and represents the number of passengers for which the particular stop is either start, intermediate, of final stop. This gives the user an idea of how busy a particular stop is.
+Flow is the sum of passengers entering and exiting the tram, and represents the number of passengers for which the particular stop is either start, intermediate, or final stop. This gives the user an idea of how busy a particular stop is.
 
 Load is the average of passengers on board before the tram arrives to the stop and after it leaves the stop. It therefore represents how full or empty the tram is at that given station.
 
