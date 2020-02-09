@@ -1,7 +1,7 @@
 import json
 import pandas as pd
 import plotly.express as px
-from traffic import *
+from app.traffic import Traffic
 
 
 class Visualizer:
@@ -56,31 +56,37 @@ class Visualizer:
         )
         fig.show()
 
-    def plot_traffic(self,type: str, zoom: int = 10, start: int = 1, end: int = 24, data_path: str = 'data/final_traffic.pkl'):
+    def plot_traffic(self,type: str, zoom: int = 9.5, start_hour: int = 0, end_hour: int = 24, data_path: str = 'data/final_traffic.pkl'):
+        """
+        Plot either delay, load or flow for the selected hour range using Plotly Density Mapbox and output_col method from Traffic.
+        :param type: depending on what you want to plot select either delay, flow or load
+        :param zoom: optional parameter for zooming the default location of the map
+        :param start_hour: optional parameter for starting hour (inclusive, 0 by default)
+        :param end_hour: optional parameter for ending hour (exclusive, 24 by default)
+        :param data_path: optional parameter for choosing data path
+        """
 
         df = pd.read_pickle(data_path)
-        df = Traffic.output_col(data = df, start = start,end = end,out = type)
+        df = Traffic().output_col(data = df, start = start_hour,end = end_hour,out = type)
 
         max_output = df['output'].max()
         mean_output = df['output'].mean()
 
         fig = px.density_mapbox(
             data_frame = df, lat = 'lat', lon = 'lon', z = 'output', hover_name = 'name',
-            radius=15,  # sets the thickness of each data point in the map
+            radius = 20,  # sets the thickness of each data point in the map
             color_continuous_midpoint = max_output / mean_output,
             # points with low number of stop counts per day
             color_continuous_scale = 'inferno', mapbox_style = "open-street-map",
-            center = dict(lat = 50.07, lon = 14.41), zoom=zoom,  # center the map on Prague
+            center = dict(lat = 50.07, lon = 14.41), zoom = zoom,  # center the map on Prague
         )
         fig.show()
-
 
 if __name__ == '__main__':
     visualizer = Visualizer()
     # print(visualizer.get_possible_dates())
     # visualizer.plot('2020-01-02')
-    now = pd.datetime.now()
-    visualizer.plot_traffic(type = 'delay')
-    # visualizer.plot_traffic(type='delay')
-    print(pd.datetime.now()-now)
     # visualizer.plot('2019-12-07')
+    # visualizer.plot_traffic(type = 'flow')
+    # visualizer.plot_traffic(type = 'load', zoom = 8)
+    # visualizer.plot_traffic(type = 'delay', start_hour = 10, end_hour = 13)
