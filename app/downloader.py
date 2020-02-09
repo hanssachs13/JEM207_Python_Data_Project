@@ -68,7 +68,7 @@ class GolemioApiDownloader:
 
     @staticmethod
     def _save_into_json(data: list or dict, file_path: str):
-        with open(file_path, 'w') as output_f:
+        with open(file_path, 'w', encoding='utf8') as output_f:
             json.dump(data, output_f, ensure_ascii=False, indent=4)
 
     def download_all_stations(self):
@@ -379,7 +379,7 @@ if __name__ == '__main__':
     my_api_key_path = 'golemio_api_key.json'  # path to your Golemio API key
     my_date = '2020-01-02'
     golemio = GolemioApiDownloader(my_api_key_path)
-    # golemio.download_all_stations()
+    golemio.download_all_stations()
     # golemio.filter_station_ids_enriched()
     # golemio.count_stop_times_per_day(my_date)
     # golemio.assign_stop_count(my_date, initial=False)
